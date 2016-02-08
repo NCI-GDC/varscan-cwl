@@ -16,7 +16,7 @@ description: |
 requirements:
   - import: node-engine.cwl
   - class: DockerRequirement
-    dockerPull: quay.io/ncigdc/varscan-tool
+  dockerPull: quay.io/ncigdc/varscan-tool:annotated
 
 class: CommandLineTool
 
