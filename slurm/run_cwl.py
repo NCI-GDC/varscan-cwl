@@ -142,8 +142,7 @@ if __name__ == "__main__":
             "--username", args.username,
             "--password", args.password,
             "--output_vcf", args.output_vcf,
-
-            "--output_snp", vcf_file,
+            "--output_snp", str(vcf_uuid),
             ]
 
     cwl_exit = pipelineUtil.run_command(cmd, logger)
