@@ -16,7 +16,7 @@ description: |
 requirements:
   - import: node-engine.cwl
   - class: DockerRequirement
-    dockerPull: quay.io/ncigdc/varscan-tool:annotated
+    dockerPull: quay.io/ncigdc/varscan-tool:mpileup
 
 class: CommandLineTool
 
@@ -38,11 +38,11 @@ inputs:
     inputBinding:
         prefix: --tumor
 
-  - id: "#output_snp"
+  - id: "#base"
     type: string
     default: "output"    
     inputBinding:
-        prefix: --output_snp
+        prefix: --base
 
   - id: "#username"
     type: string
@@ -93,7 +93,7 @@ outputs:
             engine: node-engine.cwl
             script: |
                 {
-                return $job['output_snp']+".vcf"
+                return $job['base']+".snp.vcf"
                 }
 
   - id: "#log"
@@ -108,28 +108,17 @@ outputs:
                 }
 
 
-  - id: "#normal_pileup"
+  - id: "#pileup"
     type: File
-    description: "pileup for normal dataset"
+    description: "pileup for normal and tumor dataset"
     outputBinding: 
         glob:
             engine: node-engine.cwl
             script: |
                 {
-                return $job['case_id']+".normal.pileup"
+                return $job['case_id']+".pileup"
                 }
 
-
-  - id: "#tumor_pileup"
-    type: File
-    description: "pileup for tumor datatset"
-    outputBinding: 
-        glob:
-            engine: node-engine.cwl
-            script: |
-                {
-                return $job['case_id']+".tumor.pileup"
-                }
 
 
   - id: "#indel"
@@ -140,19 +129,7 @@ outputs:
             engine: node-engine.cwl
             script: |
                 {
-                return $job['output_snp']+".indel.vcf"
-                }
-
-
-  - id: "#validation"
-    type: File
-    description: "validation file"
-    outputBinding: 
-        glob:
-            engine: node-engine.cwl
-            script: |
-                {
-                return $job['output_snp']+".validation"
+                return $job['base']+".indel.vcf"
                 }
 
 
@@ -164,7 +141,7 @@ outputs:
             engine: node-engine.cwl
             script: |
                 {
-                return $job['output_snp']+".Somatic.vcf"
+                return $job['base']+".snp.Somatic.vcf"
                 }
 
 
@@ -176,7 +153,7 @@ outputs:
             engine: node-engine.cwl
             script: |
                 {
-                return $job['output_snp']+".Somatic.hc.vcf"
+                return $job['base']+".snp.Somatic.hc.vcf"
                 }
 
 
@@ -188,7 +165,7 @@ outputs:
             engine: node-engine.cwl
             script: |
                 {
-                return $job['output_snp']+".LOH.vcf"
+                return $job['base']+".snp.LOH.vcf"
                 }
 
                 
@@ -200,7 +177,7 @@ outputs:
             engine: node-engine.cwl
             script: |
                 {
-                return $job['output_snp']+".LOH.hc.vcf"
+                return $job['base']+".snp.LOH.hc.vcf"
                 }
 
   - id: "#germline"
@@ -211,7 +188,7 @@ outputs:
             engine: node-engine.cwl
             script: |
                 {
-                return $job['output_snp']+".Germline.vcf"
+                return $job['base']+".snp.Germline.vcf"
                 }
 
   - id: "#germline_hc"
@@ -222,7 +199,7 @@ outputs:
             engine: node-engine.cwl
             script: |
                 {
-                return $job['output_snp']+".Germline.hc.vcf"
+                return $job['base']+".snp.Germline.hc.vcf"
                 }
 
 

@@ -86,6 +86,7 @@ if __name__ == "__main__":
     optional.add_argument("--s3dir", default="s3://bioinformatics_scratch/", help="path to output files")
     optional.add_argument("--basedir", default="/mnt/SCRATCH/", help="Base directory for computations")
     optional.add_argument("--output_vcf", default="1", help="Whether to output a VCF")
+
     args = parser.parse_args()
 
     if not os.path.isdir(args.basedir):
@@ -142,7 +143,7 @@ if __name__ == "__main__":
             "--username", args.username,
             "--password", args.password,
             "--output_vcf", args.output_vcf,
-            "--output_snp", str(vcf_uuid),
+            "--base", str(vcf_uuid),
             ]
 
     cwl_exit = pipelineUtil.run_command(cmd, logger)
@@ -175,13 +176,9 @@ if __name__ == "__main__":
     if os.path.isfile(vlog):
         os.rename(vlog, os.path.join(workdir, "%s.varscan.log" %str(vcf_uuid)))
 
-    normal_pileup = os.path.join(workdir, "%s.normal.pileup" %args.case_id)
-    if os.path.isfile(normal_pileup):
-        os.rename(normal_pileup, os.path.join(workdir, "%s.normal.pileup" %str(vcf_uuid)))
-
-    tumor_pileup = os.path.join(workdir, "%s.tumor.pileup" %args.case_id)
-    if os.path.isfile(tumor_pileup):
-        os.rename(tumor_pileup, os.path.join(workdir, "%s.tumor.pileup" %str(vcf_uuid)))
+    pileup = os.path.join(workdir, "%s.pileup" %args.case_id)
+    if os.path.isfile(pileup):
+        os.rename(pileup, os.path.join(workdir, "%s.pileup" %str(vcf_uuid)))
 
     exit = upload_all_output(workdir, snp_location, logger)
 
