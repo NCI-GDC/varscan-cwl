@@ -180,7 +180,7 @@ if __name__ == "__main__":
 
     #upload results to s3
 
-    snp_location = os.path.join(args.s3dir, 'varscan', str(vcf_uuid))
+    snp_location = os.path.join(args.s3dir, str(vcf_uuid))
     vcf_upload_location = os.path.join(snp_location, vcf_file)
 
     vlog = os.path.join(workdir, "%s.varscan.log" %args.case_id)
