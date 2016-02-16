@@ -7,6 +7,17 @@ import setupLog
 import logging
 import tempfile
 
+def compress_output(workdir, logger):
+    """ compress all files in a directory """
+
+
+    for filename in os.listdir(workdir):
+        filepath = os.path.join(workdir, filename)
+        cmd = ['gzip', filepath]
+        exit = pipelineUtil.run_command(cmd)
+        if exit:
+            raise Exception("Cannot compress file %s" %filepath)
+
 def update_postgres(exit, cwl_failure, vcf_upload_location, snp_location ):
     """ update the status of job on postgres """
 
@@ -180,6 +191,7 @@ if __name__ == "__main__":
     if os.path.isfile(pileup):
         os.rename(pileup, os.path.join(workdir, "%s.pileup" %str(vcf_uuid)))
 
+    compress_output(workdir, logger)
     exit = upload_all_output(workdir, snp_location, logger)
 
     #update postgres
