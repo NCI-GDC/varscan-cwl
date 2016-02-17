@@ -2,6 +2,7 @@ import postgres
 import argparse
 import os
 
+
 if __name__ == "__main__":
 
 
@@ -32,31 +33,34 @@ if __name__ == "__main__":
     }
 
     engine = postgres.db_connect(DATABASE)
-    (tumor, tumor_file, normal, normal_file) = postgres.get_complete_cases(engine)
 
-    for case_id in tumor:
-        for tum in tumor[case_id]:
-            for norm in normal[case_id]:
-                pair = [norm, tum]
-                slurm = open(os.path.join(args.outdir, "vs.%s.%s.sh" %(norm, tum)), "w")
-                temp = open("template.sh", "r")
-                for line in temp:
-                    if "XX_NORMAL_XX" in line:
-                        line = line.replace("XX_NORMAL_XX", normal_file[norm])
+    cases = postgres.get_case(engine, 'varscan_status')
 
-                    if "XX_TUMOR_XX" in line:
-                        line = line.replace("XX_TUMOR_XX", tumor_file[tum])
+    for case in cases:
+        slurm = open(os.path.join(args.outdir, "vs.%s.%s.sh" %(cases[case][1], cases[case][3])), "w")
+        temp = open("template.sh", "r")
+        for line in temp:
+            if "XX_NORMAL_XX" in line:
+                line = line.replace("XX_NORMAL_XX", cases[case][2])
 
-                    if "XX_NORMAL_ID_XX" in line:
-                        line = line.replace("XX_NORMAL_ID_XX", norm)
+            if "XX_TUMOR_XX" in line:
+                line = line.replace("XX_TUMOR_XX", cases[case][4])
 
-                    if "XX_TUMOR_ID_XX" in line:
-                        line = line.replace("XX_TUMOR_ID_XX", tum)
+            if "XX_NORMAL_ID_XX" in line:
+                line = line.replace("XX_NORMAL_ID_XX", cases[case][1])
 
-                    if "XX_CASE_ID_XX" in line:
-                        line = line.replace("XX_CASE_ID_XX", case_id)
+            if "XX_TUMOR_ID_XX" in line:
+                line = line.replace("XX_TUMOR_ID_XX", cases[case][3])
 
-                    slurm.write(line)
-                slurm.close()
-                temp.close()
+            if "XX_CASE_ID_XX" in line:
+                line = line.replace("XX_CASE_ID_XX", cases[case][0])
 
+            if "XX_username_XX" in line:
+                line = line.replace("XX_username_XX", config['username'])
+
+            if "XX_password_XX" in line:
+                line = line.replace("XX_password_XX", config['password'])
+
+            slurm.write(line)
+        slurm.close()
+        temp.close()
