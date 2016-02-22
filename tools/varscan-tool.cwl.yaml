@@ -1,0 +1,208 @@
+#!/usr/bin/env cwl-runner
+
+description: |
+    Usage: cwl-runner <path_to_cwl_file> options
+    Options:
+        --ref           path to reference genome
+        --normal        path to normal bam file
+        --tumor         path to tumor bam file
+        --snp           path to output snp file
+        --username      username for postgres
+        --password      password for postgres
+        --normal_id     universal identifier for normal dataset
+        --tumor_id      universal identifier for tumor dataset
+        --case_id       unique identifier for the patient
+
+requirements:
+  - import: node-engine.cwl
+  - class: DockerRequirement
+    dockerPull: quay.io/ncigdc/varscan-tool:mpileup
+
+class: CommandLineTool
+
+inputs:
+  - id: "#ref"
+    type: File
+    inputBinding:
+        prefix: --ref
+        secondaryFiles:
+          - ".fai"
+
+  - id: "#normal"
+    type: File
+    inputBinding:
+        prefix: --normal
+            
+  - id: "#tumor"
+    type: File
+    inputBinding:
+        prefix: --tumor
+
+  - id: "#base"
+    type: string
+    default: "output"    
+    inputBinding:
+        prefix: --base
+
+  - id: "#username"
+    type: string
+    inputBinding:
+        prefix: --username
+
+  - id: "#password"
+    type: string
+    inputBinding:
+        prefix: --password
+
+  - id: "#normal_id"
+    type: string
+    default: "unknown"
+    inputBinding:
+        prefix: --normal_id
+
+  - id: "#tumor_id"
+    type: string
+    default: "unknown"
+    inputBinding:
+        prefix: --tumor_id
+
+  - id: "#case_id"
+    type: string
+    default: "unknown"
+    inputBinding:
+        prefix: --case_id
+
+  - id: "#output_vcf"
+    type: string
+    default: "0"
+    inputBinding:
+        prefix: --output_vcf
+
+  - id: "#outdir"
+    type: string
+    default: "./"
+    inputBinding:
+        prefix: --outdir
+
+outputs:
+  - id: "#vcf"
+    type: File
+    description: "snp file"
+    outputBinding: 
+        glob:
+            engine: node-engine.cwl
+            script: |
+                {
+                return $job['base']+".snp.vcf"
+                }
+
+  - id: "#log"
+    type: File
+    description: "python log file"
+    outputBinding: 
+        glob:
+            engine: node-engine.cwl
+            script: |
+                {
+                return $job['case_id']+".varscan.log"
+                }
+
+
+  - id: "#pileup"
+    type: File
+    description: "pileup for normal and tumor dataset"
+    outputBinding: 
+        glob:
+            engine: node-engine.cwl
+            script: |
+                {
+                return $job['case_id']+".pileup"
+                }
+
+
+
+  - id: "#indel"
+    type: File
+    description: "indel file"
+    outputBinding: 
+        glob:
+            engine: node-engine.cwl
+            script: |
+                {
+                return $job['base']+".indel.vcf"
+                }
+
+
+  - id: "#somatic"
+    type: File
+    description: "somatic snp file"
+    outputBinding: 
+        glob:
+            engine: node-engine.cwl
+            script: |
+                {
+                return $job['base']+".snp.Somatic.vcf"
+                }
+
+
+  - id: "#somatic_hc"
+    type: File
+    description: "somatic high-confidence snp file"
+    outputBinding: 
+        glob:
+            engine: node-engine.cwl
+            script: |
+                {
+                return $job['base']+".snp.Somatic.hc.vcf"
+                }
+
+
+  - id: "#LOH"
+    type: File
+    description: "loss of heterozygosity calls file"
+    outputBinding: 
+        glob:
+            engine: node-engine.cwl
+            script: |
+                {
+                return $job['base']+".snp.LOH.vcf"
+                }
+
+                
+  - id: "#LOH_hc"
+    type: File
+    description: "loss of heterozygosity high confidence calls file"
+    outputBinding: 
+        glob:
+            engine: node-engine.cwl
+            script: |
+                {
+                return $job['base']+".snp.LOH.hc.vcf"
+                }
+
+  - id: "#germline"
+    type: File
+    description: "Germline SNP calls file"
+    outputBinding: 
+        glob:
+            engine: node-engine.cwl
+            script: |
+                {
+                return $job['base']+".snp.Germline.vcf"
+                }
+
+  - id: "#germline_hc"
+    type: File
+    description: "Germline high-confidence SNP calls file"
+    outputBinding: 
+        glob:
+            engine: node-engine.cwl
+            script: |
+                {
+                return $job['base']+".snp.Germline.hc.vcf"
+                }
+
+
+baseCommand: ["/home/ubuntu/.virtualenvs/p3/bin/python","/home/ubuntu/bin/varscan-tool/varscan-main.py"]
+
+
