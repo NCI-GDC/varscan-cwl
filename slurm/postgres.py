@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine, MetaData, Table
 from sqlalchemy.engine.url import URL
-from sqlalchemy import Column, Integer, String, Float
+from sqlalchemy import Column, Integer, String, Float, cast
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, mapper
 from sqlalchemy.engine.reflection import Inspector
@@ -93,9 +93,19 @@ def get_case(engine, status_table):
 
     for row in cases:
 
-        completion = session.query(State).filter(State.case_id == row.case_id).first()
+        tnpair = [row.normal_gdc_id, row.tumor_gdc_id]
 
-        if completion == None or not(completion.status == 'SUCCESS'):
+        completion = session.query(State).filter(State.files == cast(tnpair, ARRAY(String))).all()
+
+        rexecute = True
+
+        for comp_case in completion:
+
+            if not comp_case == None:
+                if comp_case.status == 'SUCCESS':
+                    rexecute = False
+
+        if rexecute:
 
             s[count] = [row.case_id,
                         row.normal_gdc_id,

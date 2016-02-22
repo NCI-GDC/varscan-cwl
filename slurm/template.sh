@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --nodes=1
-#SBATCH --cpus-per-task=40
+#SBATCH --cpus-per-task=12
 #SBATCH --workdir=/mnt/SCRATCH/
 
 normal="XX_NORMAL_XX"
@@ -23,5 +23,5 @@ if [ ! -d $dir ];then
     sudo chown ubuntu:ubuntu $dir
 fi
 
-/home/ubuntu/.virtualenvs/p2/bin/python /home/ubuntu/somaticsniper-cwl/slurm/run_cwl.py --ref $ref --refindex $refindex --normal $normal --tumor $tumor --normal_id $normal_id --tumor_id $tumor_id --case_id $case_id --username $username --password $password --basedir $basedir --cwl $cwl --s3dir $s3dir
+/home/ubuntu/.virtualenvs/p2/bin/python /home/ubuntu/varscan-cwl/slurm/run_cwl.py --ref $ref --refindex $refindex --normal $normal --tumor $tumor --normal_id $normal_id --tumor_id $tumor_id --case_id $case_id --username $username --password $password --basedir $basedir --cwl $cwl --s3dir $s3dir
 
