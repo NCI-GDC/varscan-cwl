@@ -14,14 +14,11 @@ refindex="s3://bioinformatics_scratch/GRCh38.d1.vd1.fa.fai"
 username="XX_username_XX"
 password="XX_password_XX"
 repository="git@github.com:NCI-GDC/varscan-cwl.git"
-cwl="/home/ubuntu/varscan-cwl/tools/varscan-tool.cwl.yaml"
-dir="/home/ubuntu/varscan-cwl/"
-s3dir="s3://varscan_variant/"
-
-if [ ! -d $dir ];then
-    sudo git clone -b feat/slurm $repository $dir 
-    sudo chown ubuntu:ubuntu $dir
-fi
-
-/home/ubuntu/.virtualenvs/p2/bin/python /home/ubuntu/varscan-cwl/slurm/run_cwl.py --ref $ref --refindex $refindex --normal $normal --tumor $tumor --normal_id $normal_id --tumor_id $tumor_id --case_id $case_id --username $username --password $password --basedir $basedir --cwl $cwl --s3dir $s3dir
-
+s3dir="s3://washu_varscan_variant/"
+wkdir=`mktemp -d -p /mnt/SCRATCH` 
+cd $wkdir 
+sudo git clone -b feat/slurm $repository  
+sudo chown ubuntu:ubuntu varscan-cwl 
+cwl=$wkdir/varscan-cwl/tools/varscan-tool.cwl.yaml
+/home/ubuntu/.virtualenvs/p2/bin/python $wkdir/varscan-cwl/slurm/run_cwl.py --ref $ref --refindex $refindex --normal $normal --tumor $tumor --normal_id $normal_id --tumor_id $tumor_id --case_id $case_id --username $username --password $password --basedir $basedir --cwl $cwl --s3dir $s3dir
+sudo rm -rf $wkdir
