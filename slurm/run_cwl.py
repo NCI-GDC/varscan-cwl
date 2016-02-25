@@ -200,7 +200,7 @@ if __name__ == "__main__":
         os.rename(pileup, os.path.join(workdir, "%s.pileup" %str(vcf_uuid)))
 
     compress_output(workdir, logger)
-    exit = upload_all_output(workdir, snp_location, logger, args.ceph)
+    exit = upload_all_output(workdir, snp_location, logger, args.s3ceph)
 
     #update postgres
     status, loc = update_postgres(exit, cwl_failure, vcf_upload_location, snp_location)
