@@ -20,6 +20,7 @@ class ToolTypeMixin(object):
     files = Column(ARRAY(String))
     status = Column(String)
     location = Column(String)
+    timestamp = Column(String)
 
     def __repr__(self):
         return "<ToolTypeMixin(case_id='%s', status='%s' , location='%s'>" %(self.case_id,
@@ -49,7 +50,7 @@ class State(object):
 class Files(object):
     pass
 
-def add_status(engine, case_id, vcf_id, file_ids, status, output_location):
+def add_status(engine, case_id, vcf_id, file_ids, status, output_location, timestamp):
     """ add provided metrics to database """
 
     Session = sessionmaker()
@@ -60,7 +61,9 @@ def add_status(engine, case_id, vcf_id, file_ids, status, output_location):
                     vcf_id = vcf_id,
                     files=file_ids,
                     status=status,
-                    location=output_location)
+                    location=output_location,
+                    timestamp=timestamp
+                 )
 
     create_table(engine, met)
     session.add(met)

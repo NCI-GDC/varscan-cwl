@@ -6,6 +6,7 @@ import postgres
 import setupLog
 import logging
 import tempfile
+import datetime
 
 def compress_output(workdir, logger):
     """ compress all files in a directory """
@@ -204,7 +205,8 @@ if __name__ == "__main__":
 
     #update postgres
     status, loc = update_postgres(exit, cwl_failure, vcf_upload_location, snp_location)
-    postgres.add_status(engine, args.case_id, str(vcf_uuid), [args.normal_id, args.tumor_id], status, loc)
+    timestamp = str(datetime.datetime.now())
+    postgres.add_status(engine, args.case_id, str(vcf_uuid), [args.normal_id, args.tumor_id], status, loc, timestamp)
 
     #remove work and input directories
     pipelineUtil.remove_dir(casedir)
