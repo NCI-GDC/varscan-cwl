@@ -34,6 +34,7 @@ if __name__ == "__main__":
 
     engine = postgres.db_connect(DATABASE)
 
+    count_host = 0
     cases = postgres.get_case(engine, 'varscan_status')
 
     for case in cases:
@@ -61,6 +62,13 @@ if __name__ == "__main__":
             if "XX_password_XX" in line:
                 line = line.replace("XX_password_XX", config['password'])
 
+            if "XX_HOST_BASE_XX" in line:
+                if count_host % 2 == 0:
+                    line = line.replace("XX_HOST_BASE_XX", '$host_base_kh11')
+                else:
+                    line = line.replace("XX_HOST_BASE_XX", '$host_base_kh13')
+
             slurm.write(line)
+        count_host += 1
         slurm.close()
         temp.close()
