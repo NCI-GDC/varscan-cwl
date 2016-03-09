@@ -30,8 +30,8 @@ echo "access_key = $access_key" >> $s3cfg
 echo "secret_key = $secret_key" >> $s3cfg
 echo "host_base = $host_base" >> $s3cfg
 
-sudo git clone -b develop $repository  
+sudo git clone -b feat/slurm $repository  
 sudo chown ubuntu:ubuntu varscan-cwl 
 cwl=$wkdir/varscan-cwl/tools/varscan-tool.cwl.yaml
-/home/ubuntu/.virtualenvs/p2/bin/python $wkdir/varscan-cwl/slurm/run_cwl.py --ref $ref --refindex $refindex --normal $normal --tumor $tumor --normal_id $normal_id --tumor_id $tumor_id --case_id $case_id --username $username --password $password --basedir $wkdir --cwl $cwl --s3dir $s3dir -s3ceph $s3cfg
+/home/ubuntu/.virtualenvs/p2/bin/python $wkdir/varscan-cwl/slurm/run_cwl.py --ref $ref --refindex $refindex --normal $normal --tumor $tumor --normal_id $normal_id --tumor_id $tumor_id --case_id $case_id --username $username --password $password --basedir $wkdir --cwl $cwl --s3dir $s3dir --s3ceph $s3cfg
 sudo rm -rf $wkdir
