@@ -100,6 +100,7 @@ if __name__ == "__main__":
     optional.add_argument("--output_vcf", default="1", help="Whether to output a VCF")
     optional.add_argument("--s3clsafe", default="/home/ubuntu/.s3cfg.cleversafe", help="config file for cleversafe")
     optional.add_argument("--s3ceph", default="/home/ubuntu/.s3cfg.ceph", help="config file for ceph")
+    optional.add_argument("--host", default="pgreadwrite.osdc.io", help="hostname for postgres")
 
     args = parser.parse_args()
 
@@ -129,8 +130,9 @@ if __name__ == "__main__":
     logger.info("vcf_id: %s" %(str(vcf_uuid)))
 
     #download reference file
-    logger.info("getting reference: %s" %args.ref)
-    reference = get_input_file(args.ref, index, logger)
+    if not os.path.isfile(args.ref):
+        logger.info("getting reference: %s" %args.ref)
+        reference = get_input_file(args.ref, index, logger)
 
     #download reference index
     logger.info("Getting reference index: %s" %args.refindex)
@@ -164,6 +166,7 @@ if __name__ == "__main__":
             "--password", args.password,
             "--output_vcf", args.output_vcf,
             "--base", str(vcf_uuid),
+            "--host", args.host
             ]
 
     cwl_exit = pipelineUtil.run_command(cmd, logger)
@@ -172,7 +175,7 @@ if __name__ == "__main__":
 
     DATABASE = {
         'drivername': 'postgres',
-        'host' : 'pgreadwrite.osdc.io',
+        'host' : args.host,
         'port' : '5432',
         'username': args.username,
         'password' : args.password,
@@ -209,4 +212,4 @@ if __name__ == "__main__":
     postgres.add_status(engine, args.case_id, str(vcf_uuid), [args.normal_id, args.tumor_id], status, loc, timestamp)
 
     #remove work and input directories
-    pipelineUtil.remove_dir(casedir)
+    #pipelineUtil.remove_dir(casedir)

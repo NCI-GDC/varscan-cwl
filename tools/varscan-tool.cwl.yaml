@@ -12,6 +12,7 @@ description: |
         --normal_id     universal identifier for normal dataset
         --tumor_id      universal identifier for tumor dataset
         --case_id       unique identifier for the patient
+        --host          hostname for postgres
 
 requirements:
   - import: node-engine.cwl
@@ -83,6 +84,12 @@ inputs:
     default: "./"
     inputBinding:
         prefix: --outdir
+
+  - id: "#host"
+    type: string
+    default: "pgreadwrite.osdc.io"
+    inputBinding:
+        prefix: --host
 
 outputs:
   - id: "#vcf"
