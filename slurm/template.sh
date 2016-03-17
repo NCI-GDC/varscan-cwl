@@ -18,7 +18,7 @@ s3dir="s3://washu_varscan_variant/"
 access_key=$access_key
 secret_key=$secret_key
 host_base="XX_HOST_BASE_XX"
-host="172.17.65.79"
+host="XX_HOST_XX"
 
 wkdir=`sudo mktemp -d vs.XXXXXXXXX -p /mnt/SCRATCH` 
 sudo chown ubuntu:ubuntu $wkdir
