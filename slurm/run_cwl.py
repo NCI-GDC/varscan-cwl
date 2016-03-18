@@ -175,7 +175,7 @@ if __name__ == "__main__":
 
     DATABASE = {
         'drivername': 'postgres',
-        'host' : args.host,
+        'host' : 'pgreadwrite.osdc.io',
         'port' : '5432',
         'username': args.username,
         'password' : args.password,
