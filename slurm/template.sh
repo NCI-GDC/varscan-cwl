@@ -36,7 +36,7 @@ echo "access_key = $access_key" >> $s3cfg
 echo "secret_key = $secret_key" >> $s3cfg
 echo "host_base = $host_base" >> $s3cfg
 
-sudo git clone -b feat/slurm $repository  
+sudo git clone -b feat/awscli $repository  
 sudo chown ubuntu:ubuntu varscan-cwl 
 cwl=$wkdir/varscan-cwl/tools/varscan-tool.cwl.yaml
 
