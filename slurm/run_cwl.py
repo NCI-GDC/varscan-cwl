@@ -54,10 +54,10 @@ def update_postgres(exit, cwl_failure, vcf_upload_location, snp_location ):
     return(status, loc)
 
 
-def get_input_file(fromlocation, tolocation, logger, s3cfg="/home/ubuntu/.s3cfg"):
+def get_input_file(fromlocation, tolocation, logger, s3cfg="/home/ubuntu/.s3cfg", endpoint_url='http://gdc-cephb-objstore.osdc.io/', profile='ceph'):
     """ download a file and return its location"""
 
-    exit_code = pipelineUtil.download_from_cleversafe(logger, fromlocation, tolocation, s3cfg)
+    exit_code = pipelineUtil.download_from_cleversafe(logger, fromlocation, tolocation, s3cfg, endpoint_url, profile)
 
     if exit_code:
         raise Exception("Cannot download file: %s" %(fromlocation))
@@ -101,6 +101,8 @@ if __name__ == "__main__":
     optional.add_argument("--s3clsafe", default="/home/ubuntu/.s3cfg.cleversafe", help="config file for cleversafe")
     optional.add_argument("--s3ceph", default="/home/ubuntu/.s3cfg.ceph", help="config file for ceph")
     optional.add_argument("--host", default="pgreadwrite.osdc.io", help="hostname for postgres")
+    optional.add_argument("--cleversafe_endpoint", default='http://gdc-accessors.osdc.io/', help="round robin endpoint URL for cleversafe")
+    optional.add_argument("--ceph_endpoint", default='http://gdc-cephb-objstore.osdc.io/', help="round robin endpoint URL for cephb")
 
     args = parser.parse_args()
 
@@ -132,25 +134,25 @@ if __name__ == "__main__":
     #download reference file
     if not os.path.isfile(args.ref):
         logger.info("getting reference: %s" %args.ref)
-        reference = get_input_file(args.ref, index, logger)
+        reference = get_input_file(args.ref, index, logger, endpoint_url=args.cleversafe_endpoint, profile='cleversafe')
 
     #download reference index
     logger.info("Getting reference index: %s" %args.refindex)
-    refindex = get_input_file(args.refindex, index, logger)
+    refindex = get_input_file(args.refindex, index, logger, endpoint_url=args.cleversafe_endpoint, profile='cleversafe')
 
     #download normal bam
     logger.info("getting normal bam: %s" %args.normal)
     if "ceph" in args.normal:
-        bam_norm = get_input_file(args.normal, inp, logger, args.s3ceph)
+        bam_norm = get_input_file(args.normal, inp, logger, args.s3ceph, args.ceph_endpoint, profile='ceph')
     else:
-        bam_norm = get_input_file(args.normal, inp, logger, args.s3clsafe)
+        bam_norm = get_input_file(args.normal, inp, logger, args.s3clsafe, args.cleversafe_endpoint, profile='cleversafe')
 
     #download tumor bam
     logger.info("getting tumor bam: %s" %args.tumor)
     if "ceph" in args.tumor:
-        bam_tumor = get_input_file(args.tumor, inp, logger, args.s3ceph)
+        bam_tumor = get_input_file(args.tumor, inp, logger, args.s3ceph, args.ceph_endpoint, profile='ceph')
     else:
-        bam_tumor = get_input_file(args.tumor, inp, logger, args.s3clsafe)
+        bam_tumor = get_input_file(args.tumor, inp, logger, args.s3clsafe, args.cleversafe_endpoint, profile='cleversafe')
 
     os.chdir(workdir)
 
@@ -212,4 +214,4 @@ if __name__ == "__main__":
     postgres.add_status(engine, args.case_id, str(vcf_uuid), [args.normal_id, args.tumor_id], status, loc, timestamp)
 
     #remove work and input directories
-    pipelineUtil.remove_dir(casedir)
+    #pipelineUtil.remove_dir(casedir)
