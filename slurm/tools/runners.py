@@ -87,4 +87,4 @@ def run_workflow(args):
         )
         tool.run()
     finally:
-        pass 
+        utils.pipeline.remove_dir(uniqdir) 
