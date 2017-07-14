@@ -1,0 +1,18 @@
+{
+    "pg_config": "postgres_config",
+    "full_sequence_dictionary": "GRCh38.d1.vd1.dict",
+    "full_reference_fasta": "GRCh38.d1.vd1.fa",
+    "main_reference_fai": "GRCh38.d1.vd1.main.fa.fai",
+    "main_sequence_dictionary": "GRCh38.d1.vd1.main.dict",
+    "vep_fasta": "vep_fasta/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz",
+    "cache": "cache",
+    "gdc_entrez": "custom/ensembl_entrez_names.json",
+    "gdc_evidence": "custom/Homo_sapiens.VEP.v84.variation.vcf.gz",
+    "docker": [
+        "quay.io/ncigdc/vep-tool:0.2",
+        "quay.io/ncigdc/variant-filtration-tool:0.1",
+        "quay.io/ncigdc/gdc-biasfilter-tool:0.3",
+        "quay.io/ncigdc/varscan-tool:mpileup",
+        "quay.io/ncigdc/vep-tool:0.2" 
+    ]
+}
