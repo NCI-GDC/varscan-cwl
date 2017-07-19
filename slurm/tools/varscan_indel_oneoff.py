@@ -258,7 +258,7 @@ class VarscanIndelOneoffTool(object):
             elif not os.path.isfile(os.path.join(self.inputdir, os.path.basename(fpath))):
                 self.logger.warn("Can't find downloaded file {0}: {1}".format(key, fpath)) 
                 self._handle_download_error(download_error)
-                raise Exception(download_error)
+                raise Exception(download_error + ' cant find file')
             elif utils.pipeline.get_file_size(os.path.join(self.inputdir, os.path.basename(fpath))) == 0:
                 self.logger.warn("Zero size file {0}".format(self.fpath))
                 self._handle_download_error(size_zero_error)
