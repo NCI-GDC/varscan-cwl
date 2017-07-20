@@ -83,8 +83,12 @@ def run_workflow(args):
           s3dir              = args.s3dir,
           threads            = args.thread_count,
           logger             = logger,
-          cwl_tool           = args.cwl
+          cwl_tool           = args.cwl,
+          no_cleanup         = args.no_cleanup
         )
         tool.run()
     finally:
-        utils.pipeline.remove_dir(uniqdir) 
+        if args.no_cleanup:
+            pass 
+        else:
+            utils.pipeline.remove_dir(uniqdir) 

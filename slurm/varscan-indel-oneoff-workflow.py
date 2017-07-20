@@ -76,6 +76,8 @@ def get_args():
         help='path to ProcessSnpVcf.py')
     p_cwl.add_argument('--cwl', type=str, required=True,
         help='path to workflow CWL')
+    p_cwl.add_argument('--no_cleanup', action='store_true',
+        help='for debug dont cleanup files')
 
     return p.parse_args()
 

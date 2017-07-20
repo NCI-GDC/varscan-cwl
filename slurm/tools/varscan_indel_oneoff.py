@@ -1,3 +1,4 @@
+"""A module for running the one-off VarScan Indel workflow"""
 import os
 import datetime
 import json
@@ -12,12 +13,13 @@ import utils.pipeline
 import utils.helpers
 
 class VarscanIndelOneoffTool(object):
+    """Manages the data, status, and execution of the workflow."""
     def __init__(self, workdir, inputdir, refdir, resource_json_file, 
                  hostname, program, project, case_id, src_vcf_id, 
                  tumor_bam_id, normal_bam_id, raw_vcf_id, annotated_vcf_id,
                  hc_snp_vcf, raw_indel_vcf, biasfiltered_vcf, tumor_bam, 
                  tumor_index, python_exe, script_path, s3dir, threads, 
-                 logger, cwl_tool):
+                 logger, cwl_tool, no_cleanup):
         # Main inputs
         self.workdir            = workdir
         self.inputdir           = inputdir
@@ -43,6 +45,7 @@ class VarscanIndelOneoffTool(object):
         self.threads            = threads
         self.logger             = logger
         self.cwl_tool           = cwl_tool
+        self.no_cleanup         = no_cleanup
 
         # Resources
         self.resource_data      = utils.helpers.load_json_from_file(self.resource_json_file)
@@ -164,9 +167,10 @@ class VarscanIndelOneoffTool(object):
         postgres.vcf_status.add_vcf_status(engine, self.status_class, self.pg_data)
 
         ## Cleanup
-        utils.pipeline.remove_dir(self.workdir)
+        if not self.no_cleanup: utils.pipeline.remove_dir(self.workdir)
 
     def _process_cwl_ok(self):
+        """Handles the postgres data for successful CWL runs"""
         raw_vcf_local           = os.path.join(self.workdir, self.raw_vcf_filename)
         raw_vcf_idx_local       = os.path.join(self.workdir, self.raw_vcf_index_filename)
         annotated_vcf_local     = os.path.join(self.workdir, self.annotated_vcf_filename)
@@ -185,6 +189,7 @@ class VarscanIndelOneoffTool(object):
             self.logger.info("Upload of files failed")
 
     def _process_cwl_fail(self):
+        """Handles the postgres data for unsuccessful CWL runs"""
         ## check s3put code
         if self.s3put_status == 0:
             self.pg_data['status'] = 'CWL_FAILED'
@@ -196,6 +201,7 @@ class VarscanIndelOneoffTool(object):
             self.logger.info("CWL and upload both failed")
 
     def _download_all_inputs(self):
+        """Manages the data that needs to be pulled down from s3 for inputs """
         dat = [
             {'key': 'hc_snp_vcf', 
              'localpath': self.input_json_data['hc_snp_vcf']['path'], 
@@ -240,6 +246,7 @@ class VarscanIndelOneoffTool(object):
             self._get_input_file(**d)
 
     def _get_input_file(self, key, localpath, fpath, objectstore, download_error, size_zero_error, gz_decompress=False):
+        """Catches errors for downloaded input files and decompresses gzipped vcfs"""
         if not os.path.isfile(localpath):
             self.logger.info("getting {0}: {1}".format(key, fpath))
             exit_code = None
@@ -278,6 +285,7 @@ class VarscanIndelOneoffTool(object):
                     raise e 
 
     def _handle_download_error(self, status):
+        """When there is an error downloading, sets pg and cleans up"""
         self.cwl_end = time.time()
         self.pg_data['status']   = status
         self.pg_data['location'] = None
@@ -290,15 +298,17 @@ class VarscanIndelOneoffTool(object):
         # status
         postgres.vcf_status.add_vcf_status(engine, self.status_class, self.pg_data)
         # cleanup
-        utils.pipeline.remove_dir(self.workdir)
+        if not self.no_cleanup: utils.pipeline.remove_dir(self.workdir)
 
     def _upload_results(self):
+        """Wrapper to upload results to s3"""
         self.logger.info("Uploaded to s3")
         self.s3put_status = utils.s3.aws_s3_put(
             self.logger, self.upload_directory, self.workdir,
             self.s3profile, self.s3endpoint)
 
     def _create_input_json_data(self):
+        """Creates the input json data file for use with CWL"""
         hc_snp_vcf = os.path.splitext(os.path.basename(self.hc_snp_vcf))[0] \
             if self.hc_snp_vcf.endswith(".gz") \
             else os.path.basename(self.hc_snp_vcf)
