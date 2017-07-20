@@ -88,7 +88,5 @@ def run_workflow(args):
         )
         tool.run()
     finally:
-        if args.no_cleanup:
-            pass 
-        else:
+        if not args.no_cleanup:
             utils.pipeline.remove_dir(uniqdir) 
