@@ -236,7 +236,7 @@ class VarscanIndelOneoffTool(object):
             {'key': 'tumor_index', 
              'localpath': self.input_json_data['tumor_index']['path'], 
              'fpath': self.tumor_index,
-             'objectstore': "ceph" if self.tumor_index.startswith('s3://ceph') else "cleversafe",
+             'objectstore': "ceph" if self.tumor_index.startswith('s3://ceph') or self.tumor_index.startswith('s3://bioinformatics') else "cleversafe",
              'download_error': "BAI_DOWNLOAD_ERROR",
              'size_zero_error': "BAI_SIZE_ZERO_ERROR",
              'gz_decompress': False}
