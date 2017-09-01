@@ -5,10 +5,14 @@ cwlVersion: v1.0
 class: CommandLineTool
 
 requirements:
-  - $import: envvar-global.cwl
   - class: InlineJavascriptRequirement
   - class: DockerRequirement
     dockerPull: quay.io/ncigdc/picard
+  - class: InitialWorkDirRequirement
+    listing:
+      - entry: $(inputs.input_bam)
+        entryname: $(inputs.input_bam.basename)
+        writable: True
 
 inputs:
   - id: java_opts
@@ -21,54 +25,26 @@ inputs:
       prefix: '-Xmx'
       separate: false
 
-  - id: nthreads
-    type: int
-    default: 8
-    inputBinding:
-      position: 4
-      prefix: '-XX:ParallelGCThreads='
-      separate: false
-
-  - id: ref_dict
+  - id: input_bam
     type: File
     inputBinding:
+      prefix: 'I='
+      separate: false
       position: 7
-      prefix: 'SEQUENCE_DICTIONARY='
-      separate: false
-
-  - id: output_vcf
-    type: string
-    inputBinding:
-      position: 8
-      prefix: 'OUTPUT='
-      separate: false
-
-  - id: input_vcf
-    type:
-      type: array
-      items: File
-      inputBinding:
-        prefix: 'I='
-        separate: false
-    inputBinding:
-      position: 9
+      valueFrom: $(self.basename)
 
 outputs:
-  - id: sorted_output_vcf
+  - id: bam_with_index
     type: File
     outputBinding:
-      glob: $(inputs.output_vcf)
+      glob: $(inputs.input_bam.basename)
     secondaryFiles:
-      - '.tbi'
+      - '^.bai'
 
 baseCommand: ['java', '-d64', '-XX:+UseSerialGC']
 arguments:
   - valueFrom: '/usr/local/bin/picard.jar'
     prefix: '-jar'
     position: 5
-  - valueFrom: 'SortVcf'
+  - valueFrom: 'BuildBamIndex'
     position: 6
-  - valueFrom: 'true'
-    position: 10
-    prefix: 'CREATE_INDEX='
-    separate: false
