@@ -143,11 +143,6 @@ inputs:
       prefix: '--output-vcf'
 
 outputs:
-  - id: validation_output
-    type: File
-    outputBinding:
-      glob: $(inputs.output_basename + '.validation')
-
   - id: snp_output
     type: File
     outputBinding:

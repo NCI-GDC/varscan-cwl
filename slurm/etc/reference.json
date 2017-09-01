@@ -12,7 +12,6 @@
   "tumor_purity": 1.00,
   "vs_p_value": 0.99,
   "somatic_p_value": 0.05,
-  "validation": 1,
   "output_vcf": 1,
   "min_tumor_freq": 0.10,
   "max_normal_freq": 0.05,

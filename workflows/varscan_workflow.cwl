@@ -97,9 +97,6 @@ inputs:
     doc: reference sequence dictionary file
     type: File
 outputs:
-  - id: validation_output
-    type: File
-    outputSource: varscan_somatic/validation_output
   - id: GERMLINE_ALL
     type:
       type: array
