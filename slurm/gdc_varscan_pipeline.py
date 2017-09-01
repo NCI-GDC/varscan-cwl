@@ -48,8 +48,9 @@ def get_args():
     # Parameters for pipeline
     required.add_argument("--basedir", default="/mnt/SCRATCH/", help="Base directory for computations.")
     required.add_argument("--refdir", required=True, help="Path to reference directory.")
-    required.add_argument("--cwl", required=True, help="Path to CWL workflow.")
-    required.add_argument("--sort", required=True, help="Path to Picard sortvcf CWL tool.")
+    required.add_argument("--workflow_cwl", required=True, help="Path to CWL workflow.")
+    required.add_argument("--index_cwl", required=True, help="Path to Picard buildbamindex CWL tool.")
+    required.add_argument("--sort_cwl", required=True, help="Path to Picard sortvcf CWL tool.")
     required.add_argument("--s3dir", default="s3://", help="S3bin for uploading output files.")
     required.add_argument("--s3_profile", required=True, help="S3 profile name for project tenant.")
     required.add_argument("--s3_endpoint", required=True, help="S3 endpoint url for project tenant.")
@@ -141,9 +142,21 @@ def run_pipeline(args, statusclass, metricsclass):
         sys.exit(download_exit_code)
     else:
         logger.info("Download successfully. Normal bam is %s, and tumor bam is %s." % (normal_bam, tumor_bam))
+    # Pull docker images
+    docker_pull_cmd_list = []
+    for image in docker_version:
+        cmd = utils.pipeline.docker_pull_cmd(image)
+        docker_pull_cmd_list.append(cmd)
+    docker_pull_exit = utils.pipeline.multi_commands(docker_pull_cmd_list, len(docker_pull_cmd_list), logger)
+    if any(x != 0 for x in docker_pull_exit):
+        logger.info("Failed to pull docker images.")
+        docker_pull_exit_code = next((x for x in index_exit if x != 0), None)
+        sys.exit(docker_pull_exit_code)
+    else:
+        logger.info("Pulled all docker images. {}".format(docker_version))
     # Build index
-    normal_bam_index_cmd = " ".join(['samtools', 'index', normal_bam])
-    tumor_bam_index_cmd = " ".join(['samtools', 'index', tumor_bam])
+    normal_bam_index_cmd = utils.pipeline.get_index_cmd(inputdir, args.index_cwl, normal_bam)
+    tumor_bam_index_cmd = utils.pipeline.get_index_cmd(inputdir, args.index_cwl, tumor_bam)
     index_cmd = [normal_bam_index_cmd, tumor_bam_index_cmd]
     index_exit = utils.pipeline.multi_commands(index_cmd, 2, logger)
     if any(x != 0 for x in index_exit):
@@ -151,8 +164,7 @@ def run_pipeline(args, statusclass, metricsclass):
         index_exit_code = next((x for x in index_exit if x != 0), None)
         sys.exit(index_exit_code)
     else:
-        normal_bam_index = utils.pipeline.get_index(logger, inputdir, normal_bam)
-        tumor_bam_index = utils.pipeline.get_index(logger, inputdir, tumor_bam)
+        logger.info("Build {}, {} index successfully".format(os.path.basename(normal_bam), os.path.basename(tumor_bam)))
     # Create input json
     input_json_list = []
     for i, block in enumerate(utils.pipeline.fai_chunk(reference_fasta_fai, args.block)):
@@ -178,7 +190,7 @@ def run_pipeline(args, statusclass, metricsclass):
           "min_tumor_freq": min_tumor_freq,
           "max_normal_freq": max_normal_freq,
           "vps_p_value": vps_p_value,
-          "ref_dict": {"class": "File", "path": reference_dict}
+          "ref_dict": {"class": "File", "path": reference_fasta_dict}
         }
         with open(input_json_file, 'wt') as o:
             json.dump(input_json_data, o, indent=4)
@@ -187,7 +199,7 @@ def run_pipeline(args, statusclass, metricsclass):
     # Run CWL
     os.chdir(workdir)
     logger.info('Running CWL workflow')
-    cmds = list(utils.pipeline.cmd_template(inputdir = inputdir, workdir = workdir, cwl_path = args.cwl, input_json = input_json_list))
+    cmds = list(utils.pipeline.cmd_template(inputdir = inputdir, workdir = workdir, cwl_path = args.workflow_cwl, input_json = input_json_list))
     cwl_exit = utils.pipeline.multi_commands(cmds, args.thread_count, logger)
     # Create sort json
     merged_vcf_list = glob.glob(os.path.join(workdir, "*.merged.vcf"))
@@ -197,7 +209,7 @@ def run_pipeline(args, statusclass, metricsclass):
                       "--debug",
                       "--tmpdir-prefix", inputdir,
                       "--tmp-outdir-prefix", workdir,
-                      args.sort,
+                      args.sort_cwl,
                       merged_sort_json]
     merged_exit = utils.pipeline.run_command(merged_sort_cmd, logger)
     cwl_exit.append(merged_exit)

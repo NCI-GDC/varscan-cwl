@@ -51,8 +51,9 @@ trap cleanup EXIT
 --n_s3_endpoint $n_s3_endpoint \
 --basedir $basedir \
 --refdir $refdir \
---cwl $basedir/varscan-cwl/workflows/varscan_workflow.cwl \
---sort $basedir/varscan-cwl/tools/picard-sortvcf.cwl \
+--workflow_cwl $basedir/varscan-cwl/workflows/varscan_workflow.cwl \
+--index_cwl $basedir/varscan-cwl/tools/picard_index.cwl \
+--sort_cwl $basedir/varscan-cwl/tools/picard_sortvcf.cwl \
 --s3dir $s3dir \
 --s3_profile $s3_profile \
 --s3_endpoint $s3_endpoint \

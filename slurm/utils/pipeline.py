@@ -147,13 +147,14 @@ def get_time_metrics(time_file):
 
     return time_metrics
 
-def get_index(logger, inputdir, input_bam):
-    '''build input bam file index'''
-    base, ext = os.path.splitext(os.path.basename(input_bam))
-    bai_file = os.path.join(inputdir, base) + ".bai"
-    logger.info("Build %s index successfully" % os.path.basename(input_bam))
-    os.rename(input_bam+".bai", bai_file)
-    return bai_file
+def get_index_cmd(inputdir, index_cwl, input_bam):
+    '''prepare index cmd'''
+    cmd = "/home/ubuntu/.virtualenvs/p2/bin/cwltool --debug --tmpdir-prefix {} --tmp-outdir-prefix {} {} --input_bam {}".format(inputdir, index_cwl, input_bam)
+    return cmd
+
+def docker_pull_cmd(docker):
+    cmd = "docker pull {}".format(docker)
+    return cmd
 
 def load_reference_json():
     ''' load resource JSON file '''
@@ -179,7 +180,7 @@ def create_sort_json(ref_dict, jid, jtag, jdir, indir, inlist, logger):
     sort_json_data = {
       "java_opts": '16G',
       "nthreads": 8,
-      "reference_dict": {"class": "File", "path": ref_dict}
+      "ref_dict": {"class": "File", "path": ref_dict}
     }
     json_path = os.path.join(jdir, '{0}.picard_sort.{1}.inputs.json'.format(jid, jtag))
     for vcf in inlist:
