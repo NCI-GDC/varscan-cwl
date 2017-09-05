@@ -15,22 +15,12 @@ requirements:
         writable: True
 
 inputs:
-  - id: java_opts
-    type: string
-    default: '16G'
-    doc: |
-      'JVM arguments should be a quoted, space separated list (e.g. -Xmx8g -Xmx16g -Xms128m -Xmx512m)'
-    inputBinding:
-      position: 3
-      prefix: '-Xmx'
-      separate: false
-
   - id: input_bam
     type: File
     inputBinding:
       prefix: 'I='
       separate: false
-      position: 7
+      position: 6
       valueFrom: $(self.basename)
 
 outputs:
@@ -43,8 +33,12 @@ outputs:
 
 baseCommand: ['java', '-d64', '-XX:+UseSerialGC']
 arguments:
+  - valueFrom: '16G'
+    prefix: '-Xmx'
+    separate: false
+    position: 3
   - valueFrom: '/usr/local/bin/picard.jar'
     prefix: '-jar'
-    position: 5
+    position: 4
   - valueFrom: 'BuildBamIndex'
-    position: 6
+    position: 5

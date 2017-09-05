@@ -106,7 +106,6 @@ def run_pipeline(args, statusclass, metricsclass):
     tumor_purity          = reference_data["tumor_purity"]
     vs_p_value            = reference_data["vs_p_value"]
     somatic_p_value       = reference_data["somatic_p_value"]
-    validation            = reference_data["validation"]
     is_vcf                = reference_data["output_vcf"]
     min_tumor_freq        = reference_data["min_tumor_freq"]
     max_normal_freq       = reference_data["max_normal_freq"]
@@ -158,6 +157,7 @@ def run_pipeline(args, statusclass, metricsclass):
     normal_bam_index_cmd = utils.pipeline.get_index_cmd(inputdir, args.index_cwl, normal_bam)
     tumor_bam_index_cmd = utils.pipeline.get_index_cmd(inputdir, args.index_cwl, tumor_bam)
     index_cmd = [normal_bam_index_cmd, tumor_bam_index_cmd]
+    os.chdir(inputdir)
     index_exit = utils.pipeline.multi_commands(index_cmd, 2, logger)
     if any(x != 0 for x in index_exit):
         logger.info("Failed to build bam index.")
@@ -166,15 +166,16 @@ def run_pipeline(args, statusclass, metricsclass):
     else:
         logger.info("Build {}, {} index successfully".format(os.path.basename(normal_bam), os.path.basename(tumor_bam)))
     # Create input json
+    os.chdir(workdir)
     input_json_list = []
     for i, block in enumerate(utils.pipeline.fai_chunk(reference_fasta_fai, args.block)):
         input_json_file = os.path.join(jsondir, '{0}.{4}.{1}.{2}.{3}.varscan.inputs.json'.format(str(output_id), block[0], block[1], block[2], i))
         input_json_data = {
           "ref": {"class": "File", "path": reference_fasta_path},
-          "region": "{0}:{1}-{2}".format(block[0], block[1], block[2]),
+          "region": "{}:{}-{}".format(block[0], block[1], block[2]),
           "normal_bam": {"class": "File", "path": normal_bam},
           "tumor_bam": {"class": "File", "path": tumor_bam},
-          "prefix": '{}_{}_{}'.format(block[0], block[1], block[2]),
+          "prefix": "{}_{}_{}".format(block[0], block[1], block[2]),
           "java_opts": java_opts,
           "min_coverage": min_coverage,
           "min_cov_normal": min_cov_normal,
@@ -185,7 +186,6 @@ def run_pipeline(args, statusclass, metricsclass):
           "tumor_purity": tumor_purity,
           "vs_p_value": vs_p_value,
           "somatic_p_value": somatic_p_value,
-          "validation": validation,
           "output_vcf": is_vcf,
           "min_tumor_freq": min_tumor_freq,
           "max_normal_freq": max_normal_freq,
@@ -197,7 +197,6 @@ def run_pipeline(args, statusclass, metricsclass):
         input_json_list.append(input_json_file)
     logger.info("Preparing input json")
     # Run CWL
-    os.chdir(workdir)
     logger.info('Running CWL workflow')
     cmds = list(utils.pipeline.cmd_template(inputdir = inputdir, workdir = workdir, cwl_path = args.workflow_cwl, input_json = input_json_list))
     cwl_exit = utils.pipeline.multi_commands(cmds, args.thread_count, logger)

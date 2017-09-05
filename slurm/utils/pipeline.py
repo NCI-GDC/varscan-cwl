@@ -26,7 +26,7 @@ def fai_chunk(fai_path, blocksize):
             yield (seq, i, min(i+blocksize-1, l))
 
 def do_pool_commands(cmd, logger, lock = Lock()):
-    logger.info('running chunk call: %s' % cmd)
+    logger.info('running: %s' % cmd)
     output = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     output_stdout = output.communicate()[1]
     with lock:
@@ -149,7 +149,7 @@ def get_time_metrics(time_file):
 
 def get_index_cmd(inputdir, index_cwl, input_bam):
     '''prepare index cmd'''
-    cmd = "/home/ubuntu/.virtualenvs/p2/bin/cwltool --debug --tmpdir-prefix {} --tmp-outdir-prefix {} {} --input_bam {}".format(inputdir, index_cwl, input_bam)
+    cmd = "/home/ubuntu/.virtualenvs/p2/bin/cwltool --debug --tmpdir-prefix {} --tmp-outdir-prefix {} {} --input_bam {}".format(inputdir, inputdir，index_cwl, input_bam)
     return cmd
 
 def docker_pull_cmd(docker):
