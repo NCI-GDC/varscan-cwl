@@ -137,7 +137,7 @@ def get_time_metrics(time_file):
                 if 'Percent of CPU this job got:' in line:
                     time_metrics['percent_of_cpu'].append(float(line.split(':')[-1].strip().rstrip('%')))
                 if 'Elapsed (wall clock) time (h:mm:ss or m:ss):' in line:
-                    value = ":".join(line.split(":")[4:])
+                    value = line.split("):")[-1]
                     #hour case
                     if value.count(':') == 2:
                         hours = int(value.split(':')[0])
