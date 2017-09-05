@@ -25,17 +25,26 @@ def fai_chunk(fai_path, blocksize):
         for i in range(1, l, blocksize):
             yield (seq, i, min(i+blocksize-1, l))
 
-def do_pool_commands(cmd, logger, lock = Lock()):
+def do_pool_commands(cmd, logger, lock = Lock(), shell_var=True):
     logger.info('running: %s' % cmd)
-    output = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    output_stdout = output.communicate()[1]
-    with lock:
-        logger.info('contents of output=%s' % output_stdout.decode().format())
+    try:
+        output = subprocess.Popen(cmd, shell=shell_var, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        output_stdout, output_stderr = output.communicate()
+        with lock:
+            logger.info(cmd)
+            output_stdout = output_stdout.split("\n")
+            for line in output_stdout:
+                logger.info(line)
+            output_stderr = output_stderr.split("\n")
+            for line in output_stderr:
+                logger.info(line)
+    except Exception:
+        logger.exception("command failed %s" % (cmd,))
     return output.wait()
 
-def multi_commands(cmds, thread_count, logger):
+def multi_commands(cmds, thread_count, logger, shell_var=True):
     pool = Pool(int(thread_count))
-    output = pool.map(partial(do_pool_commands, logger=logger), cmds)
+    output = pool.map(partial(do_pool_commands, logger=logger, shell_var=shell_var), cmds)
     return output
 
 def cmd_template(inputdir, workdir, cwl_path, input_json):
@@ -147,8 +156,13 @@ def get_time_metrics(time_file):
 
     return time_metrics
 
-def get_index_cmd(inputdir, index_cwl, input_bam):
-    '''prepare index cmd'''
+def get_index_cmd(inputdir, cwl, input_bam):
+    cmd = ["/home/ubuntu/.virtualenvs/p2/bin/cwltool",
+           "--debug",
+           "--tmpdir-prefix", inputdir,
+           "--tmp-outdir-prefix", inputdir,
+           cwl,
+           "--input_bam", input_bam]
     return cmd
 
 def docker_pull_cmd(docker):
