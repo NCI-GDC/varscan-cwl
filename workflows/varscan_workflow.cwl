@@ -189,7 +189,6 @@ steps:
       - id: output_vcf
         source: output_vcf
     out:
-      - id: validation_output
       - id: snp_output
       - id: indel_output
 
