@@ -149,7 +149,6 @@ def get_time_metrics(time_file):
 
 def get_index_cmd(inputdir, index_cwl, input_bam):
     '''prepare index cmd'''
-    cmd = "/home/ubuntu/.virtualenvs/p2/bin/cwltool --debug --tmpdir-prefix {} --tmp-outdir-prefix {} {} --input_bam {}".format(inputdir, inputdir，index_cwl, input_bam)
     return cmd
 
 def docker_pull_cmd(docker):
