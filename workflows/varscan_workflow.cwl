@@ -149,9 +149,9 @@ steps:
         source: tumor_bam
       - id: output
         source: prefix
+        valueFrom: $(self + '.mpileup')
       - id: min_MQ
         source: min_MQ
-        valueFrom: $(self + '.mpileup')
     out:
       - id: output_file
 
