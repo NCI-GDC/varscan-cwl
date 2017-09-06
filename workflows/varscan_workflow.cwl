@@ -30,6 +30,10 @@ inputs:
   - id: prefix
     doc: Prefix for all the outputs
     type: string
+  - id: min_MQ
+    doc: skip alignments with mapQ smaller than INT [0]
+    type: int
+    default: 1
   - id: java_opts
     doc: Java option flags for all the java cmd
     type: string
@@ -133,7 +137,7 @@ outputs:
 
 steps:
   - id: samtools_mpileup
-    run: ../tools/samtools_pileup.cwl
+    run: ../tools/samtools_mpileup.cwl
     in:
       - id: ref
         source: ref
@@ -145,6 +149,8 @@ steps:
         source: tumor_bam
       - id: output
         source: prefix
+      - id: min_MQ
+        source: min_MQ
         valueFrom: $(self + '.mpileup')
     out:
       - id: output_file

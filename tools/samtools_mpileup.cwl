@@ -22,30 +22,38 @@ inputs:
     secondaryFiles:
       - '.fai'
 
+  - id: min_MQ
+    type: int
+    doc: skip alignments with mapQ smaller than INT [0]
+    default: 1
+    inputBinding:
+      position: 2
+      prefix: -q
+
   - id: region
     type: string
     inputBinding:
-      position: 2
+      position: 3
       prefix: -r
 
   - id: normal_bam
-    type: File
-    inputBinding:
-      position: 3
-    secondaryFiles:
-      - '^.bai'
-
-  - id: tumor_bam
     type: File
     inputBinding:
       position: 4
     secondaryFiles:
       - '^.bai'
 
+  - id: tumor_bam
+    type: File
+    inputBinding:
+      position: 5
+    secondaryFiles:
+      - '^.bai'
+
   - id: output
     type: string
     inputBinding:
-      position: 5
+      position: 6
       prefix: ">"
 
 outputs:

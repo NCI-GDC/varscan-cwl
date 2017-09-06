@@ -96,6 +96,7 @@ def run_pipeline(args, statusclass, metricsclass):
     reference_fasta_path  = os.path.join(refdir, reference_data["reference_fasta"])
     reference_fasta_fai   = os.path.join(refdir, reference_data["reference_fasta_index"])
     reference_fasta_dict  = os.path.join(refdir, reference_data["reference_fasta_dict"])
+    min_MQ                = reference_data["min_MQ"]
     java_opts             = reference_data["java_opts"]
     min_coverage          = reference_data["min_coverage"]
     min_cov_normal        = reference_data["min_cov_normal"]
@@ -176,6 +177,7 @@ def run_pipeline(args, statusclass, metricsclass):
           "normal_bam": {"class": "File", "path": normal_bam},
           "tumor_bam": {"class": "File", "path": tumor_bam},
           "prefix": "{}_{}_{}".format(block[0], block[1], block[2]),
+          "min_MQ": min_MQ,
           "java_opts": java_opts,
           "min_coverage": min_coverage,
           "min_cov_normal": min_cov_normal,
@@ -202,7 +204,7 @@ def run_pipeline(args, statusclass, metricsclass):
     cwl_exit = utils.pipeline.multi_commands(cmds, args.thread_count, logger)
     # Create sort json
     merged_vcf_list = glob.glob(os.path.join(workdir, "*.merged.vcf"))
-    merged_sort_json = utils.pipeline.create_sort_json(reference_fasta_dict, str(output_id), "snp.indel.hc.updated.merged", jsondir, workdir, merged_vcf_list, logger)
+    merged_sort_json = utils.pipeline.create_sort_json(reference_fasta_dict, str(output_id), "snp.indel.hc.updated.merged", jsondir, merged_vcf_list, logger)
     # Run Sort
     merged_sort_cmd = ['/home/ubuntu/.virtualenvs/p2/bin/cwltool',
                       "--debug",
