@@ -188,7 +188,7 @@ def targz_compress(logger, filename, dirname, cmd_prefix=['tar', '-cjvf']):
 
     return exit_code
 
-def create_sort_json(ref_dict, jid, jtag, jdir, indir, inlist, logger):
+def create_sort_json(ref_dict, jid, jtag, jdir, inlist, logger):
     path_list = []
     sort_json_data = {
       "java_opts": '16G',
