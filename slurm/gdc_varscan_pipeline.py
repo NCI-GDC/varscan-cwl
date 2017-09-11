@@ -18,6 +18,7 @@ import postgres.utils
 import postgres.mixins
 import glob
 from sqlalchemy.exc import NoSuchTableError
+import pkg_resources
 
 def is_nat(x):
     '''
@@ -113,7 +114,7 @@ def run_pipeline(args, statusclass, metricsclass):
     vps_p_value           = reference_data["vps_p_value"]
     postgres_config       = os.path.join(refdir, reference_data["pg_config"])
     # Logging pipeline info
-    cwl_version    = reference_data["cwl_version"]
+    cwl_version    = pkg_resources.get_distribution("cwltool").version
     docker_version = reference_data["docker_version"]
     logger.info("cwl_version: {}".format(cwl_version))
     logger.info("docker_version: {}".format(docker_version))
