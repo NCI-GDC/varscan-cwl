@@ -140,13 +140,13 @@ steps:
     run: samtools_workflow.cwl
     in:
       - id: normal_input
-        source: normal_input
+        source: normal_bam
       - id: tumor_input
-        source: tumor_input
+        source: tumor_bam
       - id: region
         source: region
       - id: reference
-        source: reference
+        source: ref
       - id: prefix
         source: prefix
     out:
