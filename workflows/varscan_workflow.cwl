@@ -145,6 +145,8 @@ steps:
         source: tumor_bam
       - id: region
         source: region
+      - id: min_MQ
+        source: min_MQ
       - id: reference
         source: ref
       - id: prefix
@@ -158,7 +160,7 @@ steps:
       - id: java_opts
         source: java_opts
       - id: tn_pair_pileup
-        source: samtools_mpileup/chunk_mpileup
+        source: samtools_workflow/chunk_mpileup
       - id: output_basename
         source: prefix
       - id: output_snp

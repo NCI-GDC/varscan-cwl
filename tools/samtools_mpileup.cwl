@@ -33,27 +33,27 @@ inputs:
   - id: region
     type: string
     inputBinding:
-      position: 3
+      position: 4
       prefix: -r
 
   - id: normal_bam
     type: File
     inputBinding:
-      position: 4
+      position: 5
     secondaryFiles:
-      - '^.bai'
+      - '.bai'
 
   - id: tumor_bam
     type: File
     inputBinding:
-      position: 5
+      position: 6
     secondaryFiles:
-      - '^.bai'
+      - '.bai'
 
   - id: output
     type: string
     inputBinding:
-      position: 6
+      position: 7
       prefix: ">"
 
 outputs:
@@ -63,3 +63,6 @@ outputs:
       glob: $(inputs.output)
 
 baseCommand: ['samtools', 'mpileup']
+arguments:
+  - valueFrom: '-B'
+    position: 3
