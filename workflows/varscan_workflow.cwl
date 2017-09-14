@@ -136,24 +136,21 @@ outputs:
     outputSource: mergevcf/output_vcf_file
 
 steps:
-  - id: samtools_mpileup
-    run: ../tools/samtools_mpileup.cwl
+  - id: samtools_workflow
+    run: samtools_workflow.cwl
     in:
-      - id: ref
-        source: ref
+      - id: normal_input
+        source: normal_input
+      - id: tumor_input
+        source: tumor_input
       - id: region
         source: region
-      - id: normal_bam
-        source: normal_bam
-      - id: tumor_bam
-        source: tumor_bam
-      - id: output
+      - id: reference
+        source: reference
+      - id: prefix
         source: prefix
-        valueFrom: $(self + '.mpileup')
-      - id: min_MQ
-        source: min_MQ
     out:
-      - id: output_file
+      - id: chunk_mpileup
 
   - id: varscan_somatic
     run: ../tools/varscan_somatic.cwl
