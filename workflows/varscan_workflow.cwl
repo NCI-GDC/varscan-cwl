@@ -158,7 +158,7 @@ steps:
       - id: java_opts
         source: java_opts
       - id: tn_pair_pileup
-        source: samtools_mpileup/output_file
+        source: samtools_mpileup/chunk_mpileup
       - id: output_basename
         source: prefix
       - id: output_snp
