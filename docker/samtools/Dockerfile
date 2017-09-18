@@ -15,10 +15,9 @@ RUN apt-get update \
 		libbz2-dev \
 		liblzma-dev \
 	&& apt-get clean \
-	&& wget https://github.com/samtools/samtools/releases/download/1.4.1/samtools-1.4.1.tar.bz2 \
-	&& tar xf samtools-1.4.1.tar.bz2 \
-	&& cd samtools-1.4.1 \
-	&& ./configure --prefix=/usr/local \
+	&& wget http://sourceforge.net/projects/samtools/files/samtools/1.1/samtools-1.1.tar.bz2 \
+	&& tar xf samtools-1.1.tar.bz2 \
+	&& cd samtools-1.1 \
 	&& make \
 	&& make install \
 	&& cd - \

@@ -9,7 +9,7 @@ requirements:
   - class: InlineJavascriptRequirement
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: quay.io/ncigdc/samtools:9bbccff355bf
+    dockerPull: quay.io/ncigdc/samtools:1.1
 
 class: CommandLineTool
 
