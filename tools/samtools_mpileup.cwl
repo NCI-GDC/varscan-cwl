@@ -41,14 +41,14 @@ inputs:
     inputBinding:
       position: 5
     secondaryFiles:
-      - '.bai'
+      - '^.bai'
 
   - id: tumor_bam
     type: File
     inputBinding:
       position: 6
     secondaryFiles:
-      - '.bai'
+      - '^.bai'
 
   - id: output
     type: string
