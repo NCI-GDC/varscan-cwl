@@ -80,7 +80,6 @@ inputs:
   - id: validation
     doc: If set to 1, outputs all compared positions even if non-variant
     type: ['null', int]
-    default: 1
   - id: output_vcf
     doc: If set to 1, output VCF instead of VarScan native format
     type: ['null', int]
