@@ -77,6 +77,7 @@ inputs:
   - id: strand_filter
     doc: If set to 1, removes variants with >90% strand bias (0)
     type: ['null', int]
+    default: 0
   - id: validation
     doc: If set to 1, outputs all compared positions even if non-variant
     type: ['null', int]

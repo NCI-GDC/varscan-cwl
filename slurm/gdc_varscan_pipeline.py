@@ -108,6 +108,7 @@ def run_pipeline(args, statusclass, metricsclass):
     tumor_purity          = reference_data["tumor_purity"]
     vs_p_value            = reference_data["vs_p_value"]
     somatic_p_value       = reference_data["somatic_p_value"]
+    strand_filter         = reference_data["strand_filter"]
     is_vcf                = reference_data["output_vcf"]
     min_tumor_freq        = reference_data["min_tumor_freq"]
     max_normal_freq       = reference_data["max_normal_freq"]
@@ -189,6 +190,7 @@ def run_pipeline(args, statusclass, metricsclass):
           "tumor_purity": tumor_purity,
           "vs_p_value": vs_p_value,
           "somatic_p_value": somatic_p_value,
+          "strand_filter": strand_filter,
           "output_vcf": is_vcf,
           "min_tumor_freq": min_tumor_freq,
           "max_normal_freq": max_normal_freq,
