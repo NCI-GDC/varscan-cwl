@@ -145,11 +145,11 @@ def run_pipeline(args, statusclass, metricsclass):
     else:
         logger.info("Download successfully. Normal bam is %s, and tumor bam is %s." % (normal_bam, tumor_bam))
     # Pull docker images
-    docker_pull_cmd_list = []
+    docker_pull_exit = []
     for image in docker_version:
-        cmd = utils.pipeline.docker_pull_cmd(image)
-        docker_pull_cmd_list.append(cmd)
-    docker_pull_exit = utils.pipeline.multi_commands(docker_pull_cmd_list, len(docker_pull_cmd_list), logger)
+        dp_cmd = utils.pipeline.docker_pull_cmd(image)
+        dp_cmd_exit = utils.pipeline.run_command(dp_cmd, logger, shell_var=True)
+        docker_pull_exit.append(dp_cmd_exit)
     if any(x != 0 for x in docker_pull_exit):
         logger.info("Failed to pull docker images.")
         docker_pull_exit_code = next((x for x in index_exit if x != 0), None)
