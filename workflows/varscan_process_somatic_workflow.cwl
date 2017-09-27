@@ -80,7 +80,7 @@ steps:
       - id: somatic_hc
 
   - id: picard_update_seq_dict
-    run: ../tools/picard_update_seq_dict.cwl
+    run: ../../picard-cwl/tools/picard_update_seq_dict.cwl
     in:
       - id: java_opts
         source: java_opts

@@ -137,7 +137,7 @@ outputs:
 
 steps:
   - id: samtools_mpileup
-    run: ../tools/samtools_mpileup.cwl
+    run: ../../samtools-cwl/tools/samtools_mpileup.cwl
     in:
       - id: ref
         source: ref
@@ -223,7 +223,7 @@ steps:
       - id: SOMATIC_HC
 
   - id: mergevcf
-    run: ../tools/picard_mergevcf.cwl
+    run: ../../picard-cwl/tools/picard_mergevcf.cwl
     in:
       - id: java_opts
         source: java_opts
