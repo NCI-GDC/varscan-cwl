@@ -19,7 +19,7 @@ inputs:
     doc: |
       "JVM arguments should be a quoted, space separated list (e.g. -Xmx8g -Xmx16g -Xms128m -Xmx512m)"
     inputBinding:
-      position: 3
+      position: 0
       prefix: '-Xmx'
       separate: false
 
@@ -27,27 +27,7 @@ inputs:
     doc: The SAMtools pileup file for tumor/normal pair
     type: File
     inputBinding:
-      position: 6
-
-  - id: output_basename
-    doc: Output base name for SNP and indel output
-    type: string
-    inputBinding:
-      position: 7
-
-  - id: output_snp
-    doc: Output file for SNP calls (output.snp)
-    type: string
-    inputBinding:
-      position: 9
-      prefix: '--output-snp'
-
-  - id: output_indel
-    doc: Output file for indel calls (output.indel)
-    type: string
-    inputBinding:
-      position: 10
-      prefix: '--output-indel'
+      position: 3
 
   - id: min_coverage
     doc: Minimum coverage in normal and tumor to call variant (8)
@@ -146,20 +126,22 @@ outputs:
   - id: snp_output
     type: File
     outputBinding:
-      glob: $(inputs.output_snp + '.vcf')
+      glob: $(inputs.tn_pair_pileup.nameroot + '_snp.vcf')
 
   - id: indel_output
     type: File
     outputBinding:
-      glob: $(inputs.output_indel + '.vcf')
+      glob: $(inputs.tn_pair_pileup.nameroot + '_indel.vcf')
 
 baseCommand: ['java', '-d64', '-XX:+UseSerialGC']
 arguments:
   - valueFrom: '/home/ubuntu/VarScan.v2.3.9.jar'
     prefix: "-jar"
-    position: 4
+    position: 1
   - valueFrom: 'somatic'
-    position: 5
+    position: 2
+  - valueFrom: $(inputs.tn_pair_pileup.nameroot)
+    position: 4
   - valueFrom: '1'
-    position: 8
+    position: 5
     prefix: '--mpileup'

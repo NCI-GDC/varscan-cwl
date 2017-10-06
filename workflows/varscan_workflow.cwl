@@ -15,29 +15,13 @@ requirements:
 class: Workflow
 
 inputs:
-  - id: ref
-    doc: Reference sequence for SAMtools mpileup
-    type: File
-  - id: region
-    doc: Chromosome region for SAMtools mpileup
-    type: string
-  - id: normal_bam
-    doc: Normal bam file
-    type: File
-  - id: tumor_bam
-    doc: Tumor bam file
-    type: File
-  - id: prefix
-    doc: Prefix for all the outputs
-    type: string
-  - id: min_MQ
-    doc: skip alignments with mapQ smaller than INT [0]
-    type: int
-    default: 1
   - id: java_opts
     doc: Java option flags for all the java cmd
     type: string
     default: '3G'
+  - id: tn_pair_pileup
+    doc: samtools mpileup files from t/n pair
+    type: File
   - id: min_coverage
     doc: Minimum coverage in normal and tumor to call variant (8)
     type: int
@@ -100,6 +84,9 @@ inputs:
   - id: ref_dict
     doc: reference sequence dictionary file
     type: File
+  - id: prefix
+    type: string
+
 outputs:
   - id: GERMLINE_ALL
     type:
@@ -136,40 +123,13 @@ outputs:
     outputSource: mergevcf/output_vcf_file
 
 steps:
-  - id: samtools_mpileup
-    run: ../../samtools-cwl/tools/samtools_mpileup.cwl
-    in:
-      - id: ref
-        source: ref
-      - id: region
-        source: region
-      - id: normal_bam
-        source: normal_bam
-      - id: tumor_bam
-        source: tumor_bam
-      - id: output
-        source: prefix
-        valueFrom: $(self + '.mpileup')
-      - id: min_MQ
-        source: min_MQ
-    out:
-      - id: output_file
-
   - id: varscan_somatic
     run: ../tools/varscan_somatic.cwl
     in:
       - id: java_opts
         source: java_opts
       - id: tn_pair_pileup
-        source: samtools_mpileup/output_file
-      - id: output_basename
-        source: prefix
-      - id: output_snp
-        source: prefix
-        valueFrom: $(self + '_snp')
-      - id: output_indel
-        source: prefix
-        valueFrom: $(self + '_indel')
+        source: tn_pair_pileup
       - id: min_coverage
         source: min_coverage
       - id: min_cov_normal
