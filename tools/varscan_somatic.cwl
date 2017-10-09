@@ -103,21 +103,21 @@ inputs:
 
   - id: strand_filter
     doc: If set to 1, removes variants with >90% strand bias (0)
-    type: ['null', int]
+    type: int
     inputBinding:
       position: 20
       prefix: '--strand-filter'
 
   - id: validation
-    doc: If set to 1, outputs all compared positions even if non-variant
-    type: ['null', int]
+    doc: If set, outputs all compared positions even if non-variant
+    type: boolean
     inputBinding:
       position: 21
       prefix: '--validation'
 
   - id: output_vcf
     doc: If set to 1, output VCF instead of VarScan native format
-    type: ['null', int]
+    type: int
     inputBinding:
       position: 22
       prefix: '--output-vcf'
