@@ -126,12 +126,12 @@ outputs:
   - id: snp_output
     type: File
     outputBinding:
-      glob: $(inputs.tn_pair_pileup.nameroot + '_snp.vcf')
+      glob: $(inputs.tn_pair_pileup.nameroot + '.snp.vcf')
 
   - id: indel_output
     type: File
     outputBinding:
-      glob: $(inputs.tn_pair_pileup.nameroot + '_indel.vcf')
+      glob: $(inputs.tn_pair_pileup.nameroot + '.indel.vcf')
 
 baseCommand: ['java', '-d64', '-XX:+UseSerialGC']
 arguments:
