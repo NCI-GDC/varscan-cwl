@@ -14,7 +14,8 @@ requirements:
       - entry: $(inputs.input_vcf)
         entryname: $(inputs.input_vcf.basename)
         writable: True
-
+  - class: ResourceRequirement
+  
 class: CommandLineTool
 
 inputs:

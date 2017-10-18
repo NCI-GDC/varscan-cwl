@@ -9,7 +9,8 @@ requirements:
   - class: InlineJavascriptRequirement
   - class: DockerRequirement
     dockerPull: quay.io/ncigdc/varscan-tool:2.3.9
-
+  - class: ResourceRequirement
+  
 class: CommandLineTool
 
 inputs:
