@@ -10,7 +10,8 @@ requirements:
   - class: DockerRequirement
     dockerPull: quay.io/ncigdc/varscan-tool:2.3.9
   - class: ResourceRequirement
-  
+    coresMax: 1
+    
 class: CommandLineTool
 
 inputs:

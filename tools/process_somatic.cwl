@@ -15,7 +15,8 @@ requirements:
         entryname: $(inputs.input_vcf.basename)
         writable: True
   - class: ResourceRequirement
-  
+    coresMax: 1
+    
 class: CommandLineTool
 
 inputs:
