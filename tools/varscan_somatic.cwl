@@ -11,11 +11,11 @@ requirements:
     dockerPull: quay.io/ncigdc/varscan-tool:2.3.9
   - class: ResourceRequirement
     coresMax: 1
-    
+
 class: CommandLineTool
 
 inputs:
-  - id: java_opts
+  java_opts:
     type: string
     default: '3G'
     doc: |
@@ -25,13 +25,13 @@ inputs:
       prefix: '-Xmx'
       separate: false
 
-  - id: tn_pair_pileup
+  tn_pair_pileup:
     doc: The SAMtools pileup file for tumor/normal pair
     type: File
     inputBinding:
       position: 3
 
-  - id: min_coverage
+  min_coverage:
     doc: Minimum coverage in normal and tumor to call variant (8)
     type: int
     default: 8
@@ -39,7 +39,7 @@ inputs:
       position: 11
       prefix: '--min-coverage'
 
-  - id: min_cov_normal
+  min_cov_normal:
     doc: Minimum coverage in normal to call somatic (8)
     type: int
     default: 8
@@ -47,7 +47,7 @@ inputs:
       position: 12
       prefix: '--min-coverage-normal'
 
-  - id: min_cov_tumor
+  min_cov_tumor:
     doc: Minimum coverage in tumor to call somatic (6)
     type: int
     default: 6
@@ -55,7 +55,7 @@ inputs:
       position: 13
       prefix: '--min-coverage-tumor'
 
-  - id: min_var_freq
+  min_var_freq:
     doc: Minimum variant frequency to call a heterozygote (0.10)
     type: float
     default: 0.10
@@ -63,7 +63,7 @@ inputs:
       position: 14
       prefix: '--min-var-freq'
 
-  - id: min_freq_for_hom
+  min_freq_for_hom:
     doc: Minimum frequency to call homozygote (0.75)
     type: float
     default: 0.75
@@ -71,7 +71,7 @@ inputs:
       position: 15
       prefix: '--min-freq-for-hom'
 
-  - id: normal_purity
+  normal_purity:
     doc: Estimated purity (non-tumor content) of normal sample (1.00)
     type: float
     default: 1.00
@@ -79,7 +79,7 @@ inputs:
       position: 16
       prefix: '--normal-purity'
 
-  - id: tumor_purity
+  tumor_purity:
     doc: Estimated purity (tumor content) of tumor sample (1.00)
     type: float
     default: 1.00
@@ -87,7 +87,7 @@ inputs:
       position: 17
       prefix: '--tumor-purity'
 
-  - id: p_value
+  p_value:
     doc: P-value threshold to call a heterozygote (0.99)
     type: float
     default: 0.99
@@ -95,7 +95,7 @@ inputs:
       position: 18
       prefix: '--p-value'
 
-  - id: somatic_p_value
+  somatic_p_value:
     doc: P-value threshold to call a somatic site (0.05)
     type: float
     default: 0.05
@@ -103,21 +103,21 @@ inputs:
       position: 19
       prefix: '--somatic-p-value'
 
-  - id: strand_filter
+  strand_filter:
     doc: If set to 1, removes variants with >90% strand bias (0)
     type: int
     inputBinding:
       position: 20
       prefix: '--strand-filter'
 
-  - id: validation
+  validation:
     doc: If set, outputs all compared positions even if non-variant
     type: boolean
     inputBinding:
       position: 21
       prefix: '--validation'
 
-  - id: output_vcf
+  output_vcf:
     doc: If set to 1, output VCF instead of VarScan native format
     type: int
     inputBinding:
@@ -125,12 +125,12 @@ inputs:
       prefix: '--output-vcf'
 
 outputs:
-  - id: snp_output
+  snp_output:
     type: File
     outputBinding:
       glob: $(inputs.tn_pair_pileup.nameroot + '.snp.vcf')
 
-  - id: indel_output
+  indel_output:
     type: File
     outputBinding:
       glob: $(inputs.tn_pair_pileup.nameroot + '.indel.vcf')

@@ -16,11 +16,11 @@ requirements:
         writable: True
   - class: ResourceRequirement
     coresMax: 1
-    
+
 class: CommandLineTool
 
 inputs:
-  - id: java_opts
+  java_opts:
     type: string
     default: '3G'
     doc: |
@@ -30,14 +30,14 @@ inputs:
       prefix: '-Xmx'
       separate: false
 
-  - id: input_vcf
+  input_vcf:
     type: File
     doc: The VarScan output file for SNPs or InDels
     inputBinding:
       position: 6
       valueFrom: $(self.basename)
 
-  - id: min_tumor_freq
+  min_tumor_freq:
     type: float
     doc: Minimun variant allele frequency in tumor [0.10]
     default: 0.10
@@ -45,7 +45,7 @@ inputs:
       position: 7
       prefix: '--min-tumor-freq'
 
-  - id: max_normal_freq
+  max_normal_freq:
     type: float
     doc: Maximum variant allele frequency in normal [0.05]
     default: 0.05
@@ -53,7 +53,7 @@ inputs:
       position: 8
       prefix: '--maf-normal-freq'
 
-  - id: p_value
+  p_value:
     type: float
     doc: P-value for high-confidence calling [0.07]
     default: 0.07
