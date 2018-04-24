@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 '''Internal multithreading Varscan2.3.9 pipeline'''
 
+import glob
 import os
 import argparse
 import subprocess
@@ -86,6 +87,17 @@ def varscan2(jo, rd, mc, mcn, mct, mvf, mffh, np, tp, vspv, spv, sf, val, ov, mt
         varscan_process_somatic(snp_vcf, mtf, mnf, vppv, rd)
         varscan_process_somatic(indel_vcf, mtf, mnf, vppv, rd)
 
+def merge_outputs(output_list, merged_file):
+    first = True
+    with open(merged_file, 'w') as oh:
+        for out in output_list:
+            with open(out) as fh:
+                for line in fh:
+                    if first or not line.startswith('#'):
+                        oh.write(line)
+            first = False
+    return merged_file
+
 def main():
     '''main'''
     parser = argparse.ArgumentParser('Internal multithreading Varscan2.3.9 pipeline.')
@@ -131,6 +143,10 @@ def main():
     vppv = args.vps_p_value
     pool = Pool(int(threads))
     pool.map(partial(varscan2, jo, rd, mc, mcn, mct, mvf, mffh, np, tp, vspv, spv, sf, val, ov, mtf, mnf, vppv), mpileup)
+    snp_outputs = glob.glob('*snp.varscan2.somatic.hc.updated.vcf')
+    indel_outputs = glob.glob('*indel.varscan2.somatic.hc.updated.vcf')
+    merge_outputs(snp_outputs, 'multi_varscan2_snp_merged.vcf')
+    merge_outputs(indel_outputs, 'multi_varscan2_indel_merged.vcf')
 
 if __name__ == '__main__':
     main()

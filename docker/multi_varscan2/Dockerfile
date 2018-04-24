@@ -12,4 +12,4 @@ RUN wget https://github.com/broadinstitute/picard/releases/download/2.10.1/picar
 
 ADD multi_varscan2.py /bin/
 
-ENV multi_varscan2 v1.0
+ENV multi_varscan2 v1.3
