@@ -8,7 +8,7 @@ doc: |
 requirements:
   - class: InlineJavascriptRequirement
   - class: DockerRequirement
-    dockerPull: quay.io/ncigdc/multi_varscan2:1.0
+    dockerPull: quay.io/ncigdc/multi_varscan2:1.3
 
 class: CommandLineTool
 
@@ -144,12 +144,12 @@ inputs:
 
 outputs:
   SNP_SOMATIC_HC:
-    type: File[]
+    type: File
     outputBinding:
-      glob: '*snp.varscan2.somatic.hc.updated.vcf'
+      glob: 'multi_varscan2_snp_merged.vcf'
   INDEL_SOMATIC_HC:
-    type: File[]
+    type: File
     outputBinding:
-      glob: '*indel.varscan2.somatic.hc.updated.vcf'
+      glob: 'multi_varscan2_indel_merged.vcf'
 
 baseCommand: ['python', '/bin/multi_varscan2.py']
