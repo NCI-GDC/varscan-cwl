@@ -8,7 +8,7 @@ doc: |
 requirements:
   - class: InlineJavascriptRequirement
   - class: DockerRequirement
-    dockerPull: quay.io/ncigdc/multi_varscan2:1.3
+    dockerPull: quay.io/ncigdc/multi_varscan2:1.4.1
 
 class: CommandLineTool
 
