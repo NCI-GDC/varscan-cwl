@@ -32,6 +32,7 @@ def run_command(cmd, shell_var=False):
 
 def varscan_process_somatic(vcf, mtf, mnf, vppv, rd):
     '''run varscan2 process somatic and picard UpdateVcfSequenceDictionary'''
+    fileregion, fileroot = get_region(vcf)
     vps_cmd = [
         'java', '-d64', '-XX:+UseSerialGC',
         '-Xmx3G', '-jar', '/bin/VarScan.v2.3.9.jar',
@@ -42,16 +43,16 @@ def varscan_process_somatic(vcf, mtf, mnf, vppv, rd):
     ]
     print('Processing somatic {} ...'.format(vps_cmd))
     vps_cmd_output = run_command(vps_cmd)
-    fileregion, fileroot = get_region(vcf)
-    hc_vcf = fileroot + '.Somatic.hc.vcf'
-    output_file = fileroot + '.varscan2.somatic.hc.updated.vcf'
     if vps_cmd_output != 0:
         print('Failed on processing somatic.')
     else:
+        hc_vcf = fileroot + '.Somatic.hc.vcf'
+        filtered_vcf = RemoveNonStandardVariants(hc_vcf, fileroot + '.Somatic.hc.standard.vcf')
+        output_file = fileroot + '.varscan2.somatic.hc.updated.vcf'
         pud_cmd = [
             'java', '-d64', '-XX:+UseSerialGC',
             '-Xmx3G', '-jar', '/usr/local/bin/picard.jar',
-            'UpdateVcfSequenceDictionary', 'INPUT=' + hc_vcf,
+            'UpdateVcfSequenceDictionary', 'INPUT=' + filtered_vcf,
             'OUTPUT=' + output_file, 'SEQUENCE_DICTIONARY=' + rd
         ]
         print('Updating vcf seq dict {} ...'.format(pud_cmd))
@@ -79,13 +80,31 @@ def varscan2(jo, rd, mc, mcn, mct, mvf, mffh, np, tp, vspv, spv, sf, val, ov, mt
     if val: vs_cmd += ['--validation']
     print('Processing varscan2 somatic {} ...'.format(vs_cmd))
     vs_cmd_output = run_command(vs_cmd)
-    snp_vcf = output_base + '.snp.vcf'
-    indel_vcf = output_base + '.indel.vcf'
     if vs_cmd_output != 0:
         print('Failed on VarScan2 somatic calling.')
     else:
+        snp_vcf = output_base + '.snp.vcf'
+        indel_vcf = output_base + '.indel.vcf'
         varscan_process_somatic(snp_vcf, mtf, mnf, vppv, rd)
         varscan_process_somatic(indel_vcf, mtf, mnf, vppv, rd)
+
+def RemoveNonStandardVariants(input, output):
+    with open(output, 'w') as oh:
+        with open(input, 'r') as fh:
+            for line in fh:
+                if line.startswith('#'):
+                    check = False
+                else:
+                    good = set(['A', 'C', 'T', 'G'])
+                    cols = line.rstrip('\r\n').split('\t')
+                    alleles = cols[3].split(',') + cols[4].split(',')
+                    alleles_set = set(list(''.join(alleles).upper()))
+                    check = alleles_set - good
+                if check:
+                    continue
+                else:
+                    oh.write(line)
+    return output
 
 def merge_outputs(output_list, merged_file):
     first = True
