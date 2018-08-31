@@ -1,0 +1,23 @@
+{
+  "reference_fasta": "GRCh38.d1.vd1.fa",
+  "reference_fasta_index": "GRCh38.d1.vd1.fa.fai",
+  "reference_fasta_dict": "GRCh38.d1.vd1.dict",
+  "java_opts": "3G",
+  "min_MQ": 1,
+  "min_coverage": 8,
+  "min_cov_normal": 8,
+  "min_cov_tumor": 6,
+  "min_var_freq": 0.10,
+  "min_freq_for_hom": 0.75,
+  "normal_purity": 1.00,
+  "tumor_purity": 1.00,
+  "vs_p_value": 0.99,
+  "somatic_p_value": 0.05,
+  "strand_filter": 0,
+  "output_vcf": 1,
+  "min_tumor_freq": 0.10,
+  "max_normal_freq": 0.05,
+  "vps_p_value": 0.07,
+  "pg_config": "postgres_config",
+  "docker_version": ["quay.io/ncigdc/varscan-tool:2.3.9", "quay.io/ncigdc/samtools:1.1", "quay.io/ncigdc/picard"]
+}
