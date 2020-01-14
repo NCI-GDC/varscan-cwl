@@ -1,16 +1,12 @@
-#!/usr/bin/env cwl-runner
-
+class: CommandLineTool
 cwlVersion: v1.0
-
-doc: |
-    Run VarScan.v2.3.9 pipeline
-
+id: multi_varscan2
 requirements:
   - class: InlineJavascriptRequirement
   - class: DockerRequirement
-    dockerPull: quay.io/ncigdc/multi_varscan2:1.4.1
-
-class: CommandLineTool
+    dockerPull: quay.io/ncigdc/multi_varscan2:1.5
+doc: |
+    Multithreading on VarScan.v2.3.9.
 
 inputs:
   thread_count:
@@ -152,4 +148,4 @@ outputs:
     outputBinding:
       glob: 'multi_varscan2_indel_merged.vcf'
 
-baseCommand: ['python', '/bin/multi_varscan2.py']
+baseCommand: ['python', '/opt/multi_varscan2.py']

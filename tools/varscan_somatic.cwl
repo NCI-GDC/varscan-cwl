@@ -1,18 +1,14 @@
-#!/usr/bin/env cwl-runner
-
+class: CommandLineTool
 cwlVersion: v1.0
-
-doc: |
-    Run VarScan.v2.3.9 somatic
-
+id: varscan_somatic
 requirements:
   - class: InlineJavascriptRequirement
   - class: DockerRequirement
     dockerPull: quay.io/ncigdc/varscan-tool:2.3.9
   - class: ResourceRequirement
     coresMax: 1
-
-class: CommandLineTool
+doc: |
+    VarScan2 somatic calling.
 
 inputs:
   java_opts:
@@ -137,7 +133,7 @@ outputs:
 
 baseCommand: ['java', '-d64', '-XX:+UseSerialGC']
 arguments:
-  - valueFrom: '/home/ubuntu/VarScan.v2.3.9.jar'
+  - valueFrom: '/opt/VarScan.v2.3.9.jar'
     prefix: "-jar"
     position: 1
   - valueFrom: 'somatic'
