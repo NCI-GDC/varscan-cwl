@@ -4,7 +4,7 @@ id: multi_varscan2
 requirements:
   - class: InlineJavascriptRequirement
   - class: DockerRequirement
-    dockerPull: quay.io/ncigdc/multi_varscan2:8f9fc857182ee7c417c52760580e1a2ac6ad66d0
+    dockerPull: quay.io/ncigdc/multi_varscan2:68eb91ea5936ec993b0ee784c1a5510bfface96d
 doc: |
     Multithreading on VarScan.v2.3.9.
 
@@ -148,4 +148,4 @@ outputs:
     outputBinding:
       glob: 'multi_varscan2_indel_merged.vcf'
 
-baseCommand: ['python', '/opt/multi_varscan2.py']
+baseCommand: ['python3.7', '/opt/multi_varscan2_p3.py']
