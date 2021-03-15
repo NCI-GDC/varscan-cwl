@@ -4,7 +4,7 @@ id: multi_varscan2
 requirements:
   - class: InlineJavascriptRequirement
   - class: DockerRequirement
-    dockerPull: quay.io/ncigdc/multi_varscan2:9a66af4984c78664c8ed262a8b720f448474d255
+    dockerPull: quay.io/ncigdc/varscan-tool:1.0.0-28.098c734
 doc: |
     Multithreading on VarScan.v2.3.9.
 
@@ -12,7 +12,7 @@ inputs:
   thread_count:
     type: int
     inputBinding:
-      prefix: '--thread_count'
+      prefix: '--thread-count'
 
   java_opts:
     type: string
@@ -20,7 +20,7 @@ inputs:
     doc: |
       "JVM arguments should be a quoted, space separated list (e.g. -Xmx8g -Xmx16g -Xms128m -Xmx512m)"
     inputBinding:
-      prefix: -j
+      prefix: --java-opts
 
   tn_pair_pileup:
     doc: The SAMtools pileup file for tumor/normal pair
@@ -28,115 +28,115 @@ inputs:
       type: array
       items: File
       inputBinding:
-        prefix: -m
+        prefix: --mpileup
 
   ref_dict:
     type: File
     doc: reference sequence dictionary file
     inputBinding:
-      prefix: -d
+      prefix: --ref-dict
 
   min_coverage:
     doc: Minimum coverage in normal and tumor to call variant (8)
     type: int
     default: 8
     inputBinding:
-      prefix: -mc
+      prefix: --min-coverage
 
   min_cov_normal:
     doc: Minimum coverage in normal to call somatic (8)
     type: int
     default: 8
     inputBinding:
-      prefix: -mcn
+      prefix: --min-cov-normal
 
   min_cov_tumor:
     doc: Minimum coverage in tumor to call somatic (6)
     type: int
     default: 6
     inputBinding:
-      prefix: -mct
+      prefix: --min-cov-tumor
 
   min_var_freq:
     doc: Minimum variant frequency to call a heterozygote (0.10)
     type: float
     default: 0.10
     inputBinding:
-      prefix: -mvf
+      prefix: --min-var-freq
 
   min_freq_for_hom:
     doc: Minimum frequency to call homozygote (0.75)
     type: float
     default: 0.75
     inputBinding:
-      prefix: -mffh
+      prefix: --min-freq-for-hom
 
   normal_purity:
     doc: Estimated purity (non-tumor content) of normal sample (1.00)
     type: float
     default: 1.00
     inputBinding:
-      prefix: -np
+      prefix: --normal-purity
 
   tumor_purity:
     doc: Estimated purity (tumor content) of tumor sample (1.00)
     type: float
     default: 1.00
     inputBinding:
-      prefix: -tp
+      prefix: --tumor-purity
 
   vs_p_value:
     doc: P-value threshold to call a heterozygote (0.99)
     type: float
     default: 0.99
     inputBinding:
-      prefix: -vspv
+      prefix: --vs-p-value
 
   somatic_p_value:
     doc: P-value threshold to call a somatic site (0.05)
     type: float
     default: 0.05
     inputBinding:
-      prefix: -spv
+      prefix: --somatic-p-value
 
   strand_filter:
     doc: If set to 1, removes variants with >90% strand bias (0)
     type: int
     inputBinding:
-      prefix: -sf
+      prefix: --strand-filter
 
   validation:
     doc: If set, outputs all compared positions even if non-variant
     type: boolean
     inputBinding:
-      prefix: -v
+      prefix: --validation
 
   output_vcf:
     doc: If set to 1, output VCF instead of VarScan native format
     type: int
     inputBinding:
-      prefix: -ov
+      prefix: --output-vcf
 
   min_tumor_freq:
     type: float
     doc: Minimun variant allele frequency in tumor [0.10]
     default: 0.10
     inputBinding:
-      prefix: -mtf
+      prefix: --min-tumor-freq
 
   max_normal_freq:
     type: float
     doc: Maximum variant allele frequency in normal [0.05]
     default: 0.05
     inputBinding:
-      prefix: -mnf
+      prefix: --max-normal-freq
 
   vps_p_value:
     type: float
     doc: P-value for high-confidence calling [0.07]
     default: 0.07
     inputBinding:
-      prefix: -vppv
+      prefix: --vps-p-value
 
 outputs:
   SNP_SOMATIC_HC:
@@ -148,4 +148,4 @@ outputs:
     outputBinding:
       glob: 'multi_varscan2_indel_merged.vcf'
 
-baseCommand: ['python3.7', '/opt/multi_varscan2_p3.py']
+baseCommand: ''
