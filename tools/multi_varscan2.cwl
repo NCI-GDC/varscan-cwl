@@ -4,7 +4,7 @@ id: multi_varscan2
 requirements:
   - class: InlineJavascriptRequirement
   - class: DockerRequirement
-    dockerPull: quay.io/ncigdc/varscan-tool:1.0.0-28.098c734
+    dockerPull: quay.io/ncigdc/varscan-tool:1.0.0-26.0a8b450
 doc: |
     Multithreading on VarScan.v2.3.9.
 
@@ -138,6 +138,11 @@ inputs:
     inputBinding:
       prefix: --vps-p-value
 
+  timeout:
+    type: int?
+    inputBinding:
+      position: 99
+      prefix: --timeout
 outputs:
   SNP_SOMATIC_HC:
     type: File
