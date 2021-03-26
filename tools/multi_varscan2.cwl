@@ -4,7 +4,7 @@ id: multi_varscan2
 requirements:
   - class: InlineJavascriptRequirement
   - class: DockerRequirement
-    dockerPull: quay.io/ncigdc/varscan-tool:1.0.0-26.0a8b450
+    dockerPull: quay.io/ncigdc/varscan-tool:1.0.0-27.54c3e1f
 doc: |
     Multithreading on VarScan.v2.3.9.
 
