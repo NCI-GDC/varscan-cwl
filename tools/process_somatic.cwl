@@ -11,7 +11,11 @@ requirements:
         entryname: $(inputs.input_vcf.basename)
         writable: True
   - class: ResourceRequirement
+  - class: ResourceRequirement
+    coresMin: 1
     coresMax: 1
+    ramMin: 3000
+    ramMax: 3000
 doc: |
     VarScan processSomatic filtering.
 
