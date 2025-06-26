@@ -4,12 +4,7 @@ id: multi_varscan2
 requirements:
   - class: InlineJavascriptRequirement
   - class: DockerRequirement
-    dockerPull: quay.io/ncigdc/varscan-tool:1.0.0-27.54c3e1f
-  - class: ResourceRequirement
-    coresMin: $(inputs.thread_count)
-    coresMax: $(inputs.thread_count)
-    ramMin: $(Math.ceil (inputs.thread_count * 3000))
-    ramMax: $(Math.ceil (inputs.thread_count * 3000))
+    dockerPull: docker.osdc.io/ncigdc/varscan-tool:1.0.0-27.54c3e1f
 doc: |
     Multithreading on VarScan.v2.3.9.
 

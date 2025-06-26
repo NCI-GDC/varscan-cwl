@@ -4,12 +4,7 @@ id: varscan_somatic
 requirements:
   - class: InlineJavascriptRequirement
   - class: DockerRequirement
-    dockerPull: quay.io/ncigdc/varscan-tool:2.3.9
-  - class: ResourceRequirement
-    coresMin: 1
-    coresMax: 1
-    ramMin: 3000
-    ramMax: 3000
+    dockerPull: docker.osdc.io/ncigdc/varscan-tool:1.0.0-27.54c3e1f 
 doc: |
     VarScan2 somatic calling.
 
