@@ -4,14 +4,13 @@ id: process_somatic
 requirements:
   - class: InlineJavascriptRequirement
   - class: DockerRequirement
-    dockerPull: quay.io/ncigdc/varscan-tool:2.3.9
+    dockerPull: docker.osdc.io/ncigdc/varscan-tool:1.0.0-27.54c3e1f
   - class: InitialWorkDirRequirement
     listing:
       - entry: $(inputs.input_vcf)
         entryname: $(inputs.input_vcf.basename)
         writable: True
   - class: ResourceRequirement
-    coresMax: 1
 doc: |
     VarScan processSomatic filtering.
 
